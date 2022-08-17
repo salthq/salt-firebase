@@ -1,0 +1,73 @@
+{
+    "name": "salt/firebase",
+    "description": "Package which sets up Firebase authentication for our Laravel applications",
+    "keywords": [
+        "salt",
+        "laravel",
+        "firebase"
+    ],
+    "homepage": "https://github.com/salt/auth",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Salt",
+            "email": "lukes@advantagelearn.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "kraken-io/kraken-php": "^1.6",
+        "kreait/firebase-php": "^6.7",
+        "guzzlehttp/guzzle": "^7.3.0",
+        "guzzlehttp/psr7": "^2.4",
+        "spatie/laravel-package-tools": "^1.9.2"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.1",
+        "nunomaduro/collision": "^5.10",
+        "nunomaduro/larastan": "^1.0",
+        "orchestra/testbench": "^6",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-faker": "^1.0",
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "pestphp/pest-plugin-mock": "^1.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "spatie/laravel-ray": "^1.26"
+    },
+    "autoload": {
+        "psr-4": {
+            "Salt\\Firebase\\": "src",
+            "Salt\\Firebase\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Salt\\Firebase\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Salt\\Firebase\\SaltFirebaseServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

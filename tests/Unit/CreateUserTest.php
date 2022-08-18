@@ -24,24 +24,34 @@ test('Creates an existing Firebase user on the database', function () {
     assertDatabaseHas('users', ['uid' => '12345', 'email' => 'new@example.com']);
 });
 
-test('Creates a new Firebase user and creates it on the database', function () {
-    mockFirebase([
-        'localId' => '12345',
-        'email' => 'guest@example.com',
-    ]);
-
-    app()->make(CustomUserRepository::class)->upsertOrCreateUserByEmail('guest@example.com');
-
-    assertDatabaseHas('users', ['uid' => '12345', 'email' => 'guest@example.com']);
-
+test('Creates a new Firebase user and creates it on the database, and updates details', function () {
     mockFirebase([
         'localId' => '12345',
         'email' => 'guest@example.com',
     ]);
 
     app()->make(CustomUserRepository::class)->upsertOrCreateUserByEmail('guest@example.com', [
+        'displayName' => 'New ',
+        'picture' => '#',
+        'phone' => '0881254235',
+    ]);
+
+    assertDatabaseHas('users', ['uid' => '12345', 'email' => 'guest@example.com']);
+
+    app()->make(CustomUserRepository::class)->upsertOrCreateUserByEmail('guest@example.com', [
         'name' => 'Guest User',
     ]);
+
+    assertDatabaseHas('users', ['uid' => '12345', 'email' => 'guest@example.com']);
+});
+
+test('Creates a new Firebase user and creates it on the database, with no extra details', function () {
+    mockFirebase([
+        'localId' => '12345',
+        'email' => 'guest@example.com',
+    ]);
+
+    app()->make(CustomUserRepository::class)->upsertOrCreateUserByEmail('guest@example.com', []);
 
     assertDatabaseHas('users', ['uid' => '12345', 'email' => 'guest@example.com']);
 });

@@ -88,6 +88,6 @@ class AuthService
      */
     public function sessionTokenIsValid(): bool
     {
-        return $this->firebase->sessionTokenIsValid(session()->get('firebase_id_token'));
+        return $this->firebase->sessionTokenIsValid(session()->get('firebase_id_token') ?? '');
     }
 }

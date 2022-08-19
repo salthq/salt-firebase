@@ -137,15 +137,23 @@ class FirebaseService
 
     /**
      * Creates a session string
-     * for use with middleware
+     * for use with middleware.
      *
-     * @param  string  $token
-     * @param  DateInterval  $expiry
+     * Relies on session.lifetime
+     * to set ttl, which should be set
+     * to 1 hour usually, to match the
+     * validity period of a Firebase JWT.
+     *
+     * It may be slightly more than 1 hour
+     * to give the client time to refresh
+     * the token and resume the session silently.
+     *
+     * @param  string $token
      * @return string
      */
-    public function createSessionString(string $token, \DateInterval $expiry = null)
+    public function createSessionString(string $token)
     {
-        return $this->auth->createSessionCookie($token, $expiry);
+        return $this->auth->createSessionCookie($token, config('session.lifetime') * 60);
     }
 
     /**
@@ -159,7 +167,6 @@ class FirebaseService
     {
         try {
             $this->auth->verifySessionCookie($session_token);
-
             return true;
         } catch (FailedToVerifySessionCookie $e) {
             return false;

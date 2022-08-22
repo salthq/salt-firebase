@@ -1,0 +1,30 @@
+#!/bin/sh
+FILES=$(git diff --cached --name-only --diff-filter=ACMR "*.php" | sed 's| |\\ |g')
+
+x=0
+
+if ! [[ -z $FILES ]] ; then
+
+    echo "\033[0;32m\n * Running phpstan (nunomaduro/larastan) on staged files \n \033[0m"
+
+    # Run laravel/pint on staged files
+    echo "$FILES" | xargs ./vendor/bin/composer run analyse
+
+    # Capture exit code from larastan
+    x=$?
+
+    echo "\033[0;32m\n * Running laravel/pint on staged files \n \033[0m"
+
+    # Run laravel/pint on staged files
+    echo "$FILES" | xargs ./vendor/bin/pint --quiet
+
+    # # Add back the modified files to staging
+    echo "$FILES" | xargs git add
+fi
+
+if [ $x != 0 ]; then
+    echo "\033[0;31m\n ------------------------------------------------------------------- \n\033[0m"
+    echo "\033[0;31m * Commit exited, to skip checks use 'git commit --no-verify'"
+    echo "\033[0;31m\n\n\033[0m"
+    exit $x
+fi

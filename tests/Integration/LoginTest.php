@@ -98,13 +98,6 @@ test('User can access the route index if logged in', function () {
         ->assertStatus(200);
 });
 
-test('User is automatically logged out if logged in with an expired token', function () {
-    mockFirebase();
-    actingAs($this->user, ['firebase_id_token' => 'expired'])
-        ->get(route('index'))
-        ->assertRedirect(route('login'));
-});
-
 test('User cannot access login if they are already logged in', function () {
     actingAs($this->user)
         ->get(route('login.sso.verify'))

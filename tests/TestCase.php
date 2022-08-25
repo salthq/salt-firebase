@@ -5,7 +5,6 @@ namespace Salt\Firebase\Tests;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Salt\Firebase\Http\Controllers\Auth\FirebaseAuthController;
-use Salt\Firebase\Http\Middleware\FirebaseJwtMiddleware;
 use Salt\Firebase\SaltFirebaseServiceProvider;
 
 class TestCase extends Orchestra
@@ -34,10 +33,6 @@ class TestCase extends Orchestra
 
         config()->set('database.default', 'testing');
 
-        // Auth0 API testing variables
-        config()->set('salt-auth0.api.audience', 'https://alt-testing.eu.auth0.com/api/v2/');
-        config()->set('salt-auth0.api.domain', 'alt-testing-eu-auth0.com');
-
         $usersTable = include __DIR__.'/../database/migrations/create_users_table.php.stub';
         $usersTable->up();
     }
@@ -56,7 +51,7 @@ class TestCase extends Orchestra
 
         // Routes for testing purposes
         $router->get('/error', [FirebaseAuthController::class, 'error'])->name('error');
-        $router->get('/login')->name('login');
-        $router->get('/', [FirebaseAuthController::class, 'index'])->name('index')->middleware(FirebaseJwtMiddleware::class);
+        $router->get('/login', [FirebaseAuthController::class, 'index'])->name('login');
+        $router->get('/', [FirebaseAuthController::class, 'index'])->name('index');
     }
 }

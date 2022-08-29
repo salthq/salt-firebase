@@ -78,8 +78,6 @@ class AuthService
             ], $user_data)
         );
 
-        $this->login($user, $token);
-
         return $user;
     }
 

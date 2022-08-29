@@ -9,6 +9,10 @@ use Salt\Firebase\Repositories\CustomUserRepository;
 
 class AuthService
 {
+    public FirebaseService $firebase;
+
+    public CustomUserRepository $user_repository;
+
     public function __construct(FirebaseService $firebase, CustomUserRepository $user_repository)
     {
         $this->firebase = $firebase;
@@ -18,7 +22,7 @@ class AuthService
     /**
      * Process the login for a given user uid.
      */
-    public function processLoginFromToken(string $token = null): User
+    public function processLoginFromToken(string $token = null, $allow_login_signup = false): User
     {
         $firebase_user = $this->firebase->getUserFromAuthToken($token);
 
@@ -29,6 +33,9 @@ class AuthService
         $user = User::where('uid', $firebase_user->uid)->first();
 
         if (! $user) {
+            if ($allow_login_signup) {
+                return $this->processSignUpFromToken($token);
+            }
             throw new AuthServiceException('User could not be found.');
         }
 
@@ -50,7 +57,7 @@ class AuthService
     /**
      * Process the signup from a token
      */
-    public function processSignUpFromToken(string $token = null): User
+    public function processSignUpFromToken(string $token = null, $user_data = []): User
     {
         $firebase_user = $this->firebase->getUserFromAuthToken($token);
 
@@ -66,7 +73,9 @@ class AuthService
 
         $user = $this->user_repository->upsertOrCreateUserByEmail(
             $firebase_user->email,
-            ['name' => $firebase_user->displayName]
+            array_merge([
+                'name' => $firebase_user->displayName,
+            ], $user_data)
         );
 
         $this->login($user, $token);

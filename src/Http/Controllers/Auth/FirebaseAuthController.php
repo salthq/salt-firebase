@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Salt\Firebase\Exceptions\AuthServiceException;
 use Salt\Firebase\Http\Controllers\Controller;
 use Salt\Firebase\Services\AuthService;
+use Salt\Firebase\Services\FirebaseService;
 
 /**
  * This controller can be extended or entirely
@@ -21,9 +22,10 @@ class FirebaseAuthController extends Controller
 {
     public AuthService $firebase_auth_service;
 
-    public function __construct(AuthService $firebase_auth_service)
+    public function __construct(AuthService $firebase_auth_service, FirebaseService $firebase_service)
     {
         $this->firebase_auth_service = $firebase_auth_service;
+        $this->firebase_service = $firebase_service;
     }
 
     public function index(Request $request)
@@ -54,7 +56,7 @@ class FirebaseAuthController extends Controller
             if ($request->get('reg')) {
                 $this->firebase_auth_service->processSignUpFromToken($request->input('token'));
             } else {
-                $this->firebase_auth_service->processLoginFromToken($request->input('token'), config('salt-firebase.allow_login_signup'));
+                $this->firebase_auth_service->processLoginFromToken($request->input('token'));
             }
         } catch (AuthServiceException $e) {
             return redirect()->to(route(config('salt-firebase.routes.login_error')))->with('error', $e->getMessage());

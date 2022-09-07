@@ -21,8 +21,5 @@ return [
 
     // Specify allowed email domains for authentication
     // In addition to those allowed by config/auth.php
-    'allowed_emails' => ['@okayemail.com'],
-
-    // Allow the login method to sign up the user if they don't exist
-    'allow_login_signup' => true,
+    'admin_emails' => [],
 ];

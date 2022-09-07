@@ -148,7 +148,7 @@ class FirebaseService
      * to give the client time to refresh
      * the token and resume the session silently.
      *
-     * @param  string $token
+     * @param  string  $token
      * @return string
      */
     public function createSessionString(string $token)
@@ -167,8 +167,41 @@ class FirebaseService
     {
         try {
             $this->auth->verifySessionCookie($session_token);
+
             return true;
         } catch (FailedToVerifySessionCookie $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Generate a reset password link for use in a
+     * custom email.
+     */
+    public function getPasswordResetLink(string $email)
+    {
+        return $this->auth->getPasswordResetLink($email);
+    }
+
+    /**
+     * Send a password reset email, managed by
+     * Firebase console.
+     */
+    public function requestPasswordResetEmail(string $email)
+    {
+        return $this->auth->sendPasswordResetLink($email);
+    }
+
+    /**
+     * Confirm password reset
+     */
+    public function confirmPasswordReset(string $oob_code, string $email, $invalidate_previous_sessions = true): bool
+    {
+        try {
+            return $this->auth->confirmPasswordReset($oob_code, $email, $invalidate_previous_sessions);
+
+            return true;
+        } catch (\Exception $e) {
             return false;
         }
     }

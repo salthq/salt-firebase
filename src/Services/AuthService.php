@@ -22,7 +22,7 @@ class AuthService
     /**
      * Process the login for a given user uid.
      */
-    public function processLoginFromToken(string $token = null, $allow_login_signup = false): User
+    public function processLoginFromToken(string $token = null): User
     {
         $firebase_user = $this->firebase->getUserFromAuthToken($token);
 
@@ -33,7 +33,8 @@ class AuthService
         $user = User::where('uid', $firebase_user->uid)->first();
 
         if (! $user) {
-            if ($allow_login_signup) {
+            // Configured email domains are allowed to sign up during login
+            if (self::emailIsAllowed($firebase_user->email)) {
                 return $this->processSignUpFromToken($token);
             }
             throw new AuthServiceException('User could not be found.');
@@ -65,9 +66,7 @@ class AuthService
             throw new AuthServiceException('User could not be verified using token.');
         }
 
-        $allowed_email_domains = array_merge(config('salt-firebase.allowed_emails'), config('auth.admin_emails') ?? []);
-
-        if (! in_array(substr($firebase_user->email, strpos($firebase_user->email, '@')), $allowed_email_domains)) {
+        if (! self::emailIsAllowed($firebase_user->email)) {
             throw new AuthServiceException('Sign up is not permitted for your email address.');
         }
 
@@ -96,5 +95,15 @@ class AuthService
     public function sessionTokenIsValid(): bool
     {
         return $this->firebase->sessionTokenIsValid(session()->get('firebase_id_token') ?? '');
+    }
+
+    /**
+     * Check if email is allowed for login on signup
+     */
+    public static function emailIsAllowed(string $email): bool
+    {
+        $allowed_email_domains = array_merge(config('salt-firebase.admin_emails'), config('auth.admin_emails') ?? []);
+
+        return in_array(substr($email, strpos($email, '@')), $allowed_email_domains);
     }
 }

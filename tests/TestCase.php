@@ -32,6 +32,7 @@ class TestCase extends Orchestra
         parent::getEnvironmentSetUp($app);
 
         config()->set('database.default', 'testing');
+        config()->set('salt-firebase.admin_emails', ['@okayemail.com']);
 
         $usersTable = include __DIR__.'/../database/migrations/create_users_table.php.stub';
         $usersTable->up();
@@ -52,6 +53,7 @@ class TestCase extends Orchestra
         // Routes for testing purposes
         $router->get('/error', [FirebaseAuthController::class, 'error'])->name('error');
         $router->get('/login', [FirebaseAuthController::class, 'index'])->name('login');
+        $router->post('/reset-password', [FirebaseAuthController::class, 'verifyPasswordReset'])->name('password.reset');
         $router->get('/', [FirebaseAuthController::class, 'index'])->name('index');
     }
 }

@@ -205,4 +205,18 @@ class FirebaseService
             return false;
         }
     }
+
+    /**
+     * Create custom token
+     */
+    public function createCustomToken(string $uid)
+    {
+
+        try {
+            return $this->auth->createCustomToken($uid);
+        } catch (Exception $e) {
+            return false;
+        }
+
+    }
 }

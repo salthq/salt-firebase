@@ -21,5 +21,5 @@ return [
 
     // Specify allowed email domains for authentication
     // In addition to those allowed by config/auth.php
-    'allowed_emails' => ['@okayemail.com'],
+    'admin_emails' => [],
 ];

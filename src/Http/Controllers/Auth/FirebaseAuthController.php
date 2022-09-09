@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Salt\Firebase\Exceptions\AuthServiceException;
 use Salt\Firebase\Http\Controllers\Controller;
 use Salt\Firebase\Services\AuthService;
+use Salt\Firebase\Services\FirebaseService;
 
 /**
  * This controller can be extended or entirely
@@ -19,12 +20,15 @@ use Salt\Firebase\Services\AuthService;
  */
 class FirebaseAuthController extends Controller
 {
-    public function __construct(AuthService $firebase_auth_service)
+    public AuthService $firebase_auth_service;
+
+    public function __construct(AuthService $firebase_auth_service, FirebaseService $firebase_service)
     {
         $this->firebase_auth_service = $firebase_auth_service;
+        $this->firebase_service = $firebase_service;
     }
 
-    public function index( Request $request  )
+    public function index(Request $request)
     {
         if (! Auth::check()) {
             return redirect()->to(route(config('salt-firebase.routes.login')));
@@ -69,7 +73,7 @@ class FirebaseAuthController extends Controller
         // Check token has been passed
         if (! $request->input('token')) {
             return response()->json([
-                'error' => 'Token not provided'
+                'error' => 'Token not provided',
             ], 400);
         }
 
@@ -77,7 +81,7 @@ class FirebaseAuthController extends Controller
             $this->firebase_auth_service->processLoginFromToken($request->input('token'));
         } catch (AuthServiceException $e) {
             return response()->json([
-                'error' => 'Could not resume the session.'
+                'error' => 'Could not resume the session.',
             ], 403);
         }
 
@@ -88,7 +92,7 @@ class FirebaseAuthController extends Controller
      * Logs the user out and redirects
      * to login url.
      */
-    public function logout( Request $request )
+    public function logout(Request $request)
     {
         $this->firebase_auth_service->logout();
 
@@ -100,7 +104,7 @@ class FirebaseAuthController extends Controller
      * using a different view to display
      * the error.
      */
-    public function error( Request $request )
+    public function error(Request $request)
     {
         return response()->json([
             'error_message' => 'Sorry there was an issue logging you in, please try again or contact support',

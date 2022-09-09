@@ -67,6 +67,18 @@ test('User can signup if they have an email matching the allow list', function (
     assertDatabaseHas('users', ['uid' => '111', 'email' => 'new@okayemail.com']);
 });
 
+test('User can signup if they have an email matching the allow list and are attempting login', function () {
+    mockFirebase([
+        'localId' => '1112',
+        'email' => 'new2@okayemail.com',
+    ]);
+
+    get(route('login.sso.verify', ['token' => 'VALID', 'reg' => false]))
+        ->assertRedirect(route('index'));
+
+    assertDatabaseHas('users', ['uid' => '1112', 'email' => 'new2@okayemail.com']);
+});
+
 test('User cannot signup if email does match the allow list', function () {
     mockFirebase([
         'localId' => '222',

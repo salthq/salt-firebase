@@ -35,9 +35,10 @@ class AuthService
         if (! $user) {
             // Configured email domains are allowed to sign up during login
             if (self::emailIsAllowed($firebase_user->email)) {
-                return $this->processSignUpFromToken($token);
+                $user = $this->processSignUpFromToken($token);
+            } else {
+                throw new AuthServiceException('User could not be found.');
             }
-            throw new AuthServiceException('User could not be found.');
         }
 
         $this->login($user, $token);

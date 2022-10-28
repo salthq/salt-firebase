@@ -219,4 +219,23 @@ class FirebaseService
         }
 
     }
+
+    /**
+     * Update firebase user password
+     *
+     * @param string $uid
+     * @param string $password
+     * @return boolean
+     */
+    public function updateUserPassword(string $uid, string $password)
+    {
+
+        try {
+            $this->auth->changeUserPassword($uid, $password);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
 }

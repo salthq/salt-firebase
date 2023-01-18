@@ -180,7 +180,17 @@ class FirebaseService
      */
     public function getPasswordResetLink(string $email)
     {
-        return $this->auth->getPasswordResetLink($email);
+        $continue_url = session('redirect_url') ?? config('app.url');
+        try {
+            $link = $this->auth->getPasswordResetLink($email,[
+                'continueUrl' => $continue_url
+            ]);
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return false;
+        }
+
+        return $link;
     }
 
     /**

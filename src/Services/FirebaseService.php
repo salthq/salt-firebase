@@ -238,4 +238,14 @@ class FirebaseService
 
         return true;
     }
+
+    public function invalidateSession(string $uid): bool
+    {
+        try {
+            $this->auth->revokeRefreshTokens($uid);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 }

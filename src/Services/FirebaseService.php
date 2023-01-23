@@ -249,6 +249,14 @@ class FirebaseService
         return true;
     }
 
+    public function changeUserEmail(string $uid, string $email): UserRecord
+    {
+        $user = $this->auth->changeUserEmail($uid, $email);
+
+        return $user;
+    }
+
+
     public function invalidateSession(string $uid): bool
     {
         try {

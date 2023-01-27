@@ -51,7 +51,7 @@ class AuthService
      */
     public function login($user, string $token): void
     {
-        Auth::login($user, true);
+        Auth::login($user, config('salt-firebase.remember_me_cookie'));
 
         session(['firebase_id_token' => $this->firebase->createSessionString($token)]);
     }

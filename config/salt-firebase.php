@@ -22,4 +22,7 @@ return [
     // Specify allowed email domains for authentication
     // In addition to those allowed by config/auth.php
     'admin_emails' => [],
+
+    // Enable the remember me functionality
+    'remember_me_cookie' => true
 ];

@@ -26,6 +26,8 @@ class AuthService
     {
         $firebase_user = $this->firebase->getUserFromAuthToken($token);
 
+        logger(print_r($firebase_user,true));
+
         if (! $firebase_user) {
             throw new AuthServiceException('User could not be verified using token.');
         }
@@ -34,7 +36,7 @@ class AuthService
 
         if (! $user) {
             // Configured email domains are allowed to sign up during login
-            if (self::emailIsAllowed($firebase_user->email)) {
+            if ($firebase_user->email && self::emailIsAllowed($firebase_user->email)) {
                 $user = $this->processSignUpFromToken($token);
             } else {
                 throw new AuthServiceException('User could not be found.');

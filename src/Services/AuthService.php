@@ -26,8 +26,6 @@ class AuthService
     {
         $firebase_user = $this->firebase->getUserFromAuthToken($token);
 
-        logger(print_r($firebase_user,true));
-
         if (! $firebase_user) {
             throw new AuthServiceException('User could not be verified using token.');
         }

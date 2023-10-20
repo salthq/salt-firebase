@@ -2,7 +2,7 @@
 
 All notable changes to `salt/firebase` will be documented in this file.
 
-# 1.0.9 - 2023-10-20
+# 1.0.11 - 2023-10-20
 [Fix] - When email is changed, the new email should be changed in firebase also
 
 

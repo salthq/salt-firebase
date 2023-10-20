@@ -24,6 +24,12 @@ class CustomUserRepository
      */
     protected function upsertUser(UserRecord $firebase_user, array $user_data = null): User
     {
+        // Propagate the email change through to firebase
+        if ($user_data[email]) {
+            $this->firebase->changeUserEmail($firebase_user->uid, $user_data['email']); 
+        }
+
+        // Update the user model with relevant details
         return User::updateOrCreate(['uid' => $firebase_user->uid], [
             'email' => $firebase_user->email ?? $user_data['email'] ?? '',
             'name' => $firebase_user->displayName ?? $user_data['name'] ?? '',
